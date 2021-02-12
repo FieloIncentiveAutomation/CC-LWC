@@ -1,0 +1,24 @@
+<template>
+    <h3 class="slds-section-title--divider">{title}</h3>
+    <div class="fielo-related-list-container">
+        <template if:true={tableReady}>
+            <template if:true={showCheckbox}>
+                <lightning-datatable class="fielosf-list__data-table" key-field="Id" data={records} columns={columns}>
+                </lightning-datatable>
+            </template>
+            <template if:false={showCheckbox}>
+                <lightning-datatable class="fielosf-list__data-table" key-field="Id" data={records} columns={columns} hide-checkbox-column>
+                </lightning-datatable>
+            </template>
+
+            <lightning-layout horizontal-align="center" class="fielosf-list__paginator slds-m-bottom--large">
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Previous" onclick={handlePrevious} disabled={disablePrevious}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Next" onclick={handleNext} disabled={disableNext}></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+    </div>
+</template>

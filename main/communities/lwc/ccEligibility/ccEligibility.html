@@ -1,0 +1,39 @@
+<template>
+    <div class={cssMainClass}>
+        <template if:true={loaded}>
+            <div if:false={isProgress}
+                class="fielo-cc-progress__container slds-border_top slds-border_right slds-border_left slds-border_bottom slds-p-around--small">
+                <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+            </div>
+            <lightning-layout if:true={isProgress}
+                class="fielo-cc-progress__container slds-border_top slds-border_right slds-border_left slds-border_bottom"
+                multiple-rows>
+                <template for:each={criterias} for:item='item' for:index="index">
+                    <lightning-layout-item key={item.nameCriterion} size="12"
+                        class="slds-border_bottom slds-p-around--x-small">
+                        <div>
+                            <lightning-icon if:true={item.applyCriterion} icon-name="utility:success" size="x-small"
+                                alternative-text={label.achieved} title={label.achieved} variant="success"
+                                class="slds-p-right--x-small"></lightning-icon>
+                            <lightning-icon if:false={item.applyCriterion} icon-name="utility:success" size="x-small"
+                                alternative-text={label.notAchieved} title={label.notAchieved}
+                                class="slds-p-right--x-small"></lightning-icon>
+                            <span class="slds-text-title">{item.nameCriterion}</span><span if:true={item.goalValue}
+                                class="slds-float_right slds-text-title slds-text-color_weak">{item.currentValue}/{item.goalValue}</span>
+                        </div>
+                        <div if:true={item.goalValue} class="slds-p-left--large">
+                            <lightning-progress-bar value={item.progress} size="small" variant="circular">
+                            </lightning-progress-bar>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+        </template>
+        <template if:false={loaded}>
+             <div class="fielo-cc-progress__container slds-border_top slds-border_right slds-border_left slds-border_bottom slds-p-around--small">
+                 <lightning-spinner alternative-text="Loading"></lightning-spinner>
+
+             </div>
+        </template>
+    </div>
+</template>

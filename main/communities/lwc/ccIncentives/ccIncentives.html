@@ -1,0 +1,368 @@
+<template>
+  <div class="fielo-incentives">
+    <!-- Init list  -->
+    <lightning-layout class="fielo-incentives__list"  multiple-rows >
+      <!-- title -->
+      <lightning-layout-item if:true={componentTitle} size="12" class="fielo-incentives__list-title slds-p-around_small">{componentTitle}</lightning-layout-item>
+      <!-- filters -->
+      <lightning-layout-item size="12" class="fielo-incentives__list-filter slds-p-around_small">
+        <lightning-layout class="fielo-incentives__filter" multiple-rows>
+          <!-- Listed Incentives -->
+          <lightning-layout-item size="6" small-device-size="6" medium-device-size="4"
+            large-device-size="2" class="slds-p-horizontal_large slds-p-left--none">
+            <lightning-combobox
+              name="filter-group"
+              label={label.listedIncentives}
+              options={incentivesGroups}
+              onchange={handleChangeListedIncentives} 
+              value={listedIncentive}
+              class="fielo-incentives__filter-item"></lightning-combobox>
+          </lightning-layout-item>
+          <!-- Dynamic filters -->
+          <template for:each={filterDataList} for:item="item" for:index="index">
+            <lightning-layout-item size="6" small-device-size="6" medium-device-size="4" large-device-size="2"
+              key={item.name} class="slds-p-horizontal_large slds-p-left--none">
+            
+              <!-- Picklist -->
+              <lightning-combobox if:true={item.type.picklist} name={item.name} label={item.label}
+                options={item.picklistentries} onchange={handleFilterChange}
+                class="fielo-incentives__filter-item" data-field-name={item.name} value={item.value}>
+              </lightning-combobox>
+
+              <!-- startDate -->
+              <lightning-input if:true={item.type.startDate} type="date" name={item.name} label={item.label}
+                onchange={handleFilterChange} class="fielo-incentives__filter-item" data-field-name={item.name} value={item.value}></lightning-input>
+              <!-- endDate -->
+              <lightning-input if:true={item.type.endDate} type="date" name={item.name} label={item.label}
+                onchange={handleFilterChange} class="fielo-incentives__filter-item" data-field-name={item.name} value={item.value}></lightning-input>
+
+              <!-- Date -->
+              <div if:true={item.type.date}>
+                <label class="slds-form-element__label">{item.label}</label>
+                <lightning-layout>
+                  <lightning-layout-item key={item.index} size="6"> 
+                    <lightning-input type="date" name={item.rangeStart} data-range="start" variant="label-hidden" placeholder="From"
+                      onchange={handleFilterChange} class="fielo-incentives__filter-item" data-field-name={item.name} value={item.value}></lightning-input>
+                  </lightning-layout-item>
+                  <lightning-layout-item key={item.index} size="6">
+                    <lightning-input type="date" name={item.rangeEnd} data-range="end" variant="label-hidden" placeholder="To"
+                      onchange={handleFilterChange} class="fielo-incentives__filter-item slds-m-left_xx-small" data-field-name={item.name} ></lightning-input>
+                  </lightning-layout-item>
+                </lightning-layout>
+              </div>
+
+              <!-- String -->
+              <lightning-input if:true={item.type.string} type="string" name={item.name} label={item.label}
+                onchange={handleFilterChange} class="fielo-incentives__filter-item" data-field-name={item.name} value={item.value}></lightning-input>
+
+              <!-- Number -->
+              <div if:true={item.type.number}>
+                <label class="slds-form-element__label">{item.label}</label>
+                <lightning-layout>
+                  <lightning-layout-item size="6">
+                    <lightning-input type="number" name={item.rangeStart} data-range="start" variant="label-hidden" placeholder="From"
+                      onchange={handleFilterChange} class="fielo-incentives__filter-item" data-field-name={item.name} value={item.value}></lightning-input>
+                  </lightning-layout-item>
+                  <lightning-layout-item size="6">
+                    <lightning-input type="number" name={item.rangeEnd} data-range="end" variant="label-hidden" placeholder="To"
+                      onchange={handleFilterChange} class="fielo-incentives__filter-item slds-m-left_xx-small" data-field-name={item.name} ></lightning-input>
+                  </lightning-layout-item>
+                </lightning-layout>
+              </div>
+
+              <!-- Boolean -->
+              <div if:true={item.type.boolean}>
+                <label class="slds-form-element__label">{item.label}</label>
+                <lightning-input type="toggle" name={item.name} variant="label-hidden" label={item.label} message-toggle-active="" message-toggle-inactive=""
+                  onchange={handleFilterChange} class="fielo-incentives__filter-item slds-m-top_xx-small" data-field-name={item.name} value={item.value}></lightning-input>
+              </div>
+            </lightning-layout-item>
+          </template>
+          <!-- End Dynamic filters -->
+          <!-- Sort By -->
+          <lightning-layout-item size="6" small-device-size="6" medium-device-size="4" large-device-size="2"
+            class="slds-p-horizontal_large slds-p-left--none">
+            <lightning-combobox label={label.sortBy} options={sortByOptions} onchange={handleChangeSortBy} placeholder={label.sortByNewestFirst} value="Newest First"></lightning-combobox>
+          </lightning-layout-item>
+          
+        </lightning-layout>
+      </lightning-layout-item>
+      <template if:true={loaded}>
+        <!-- No results message -->
+        <lightning-layout-item if:false={recordsForList.length} size="12"
+          class="fielo-incentives__list-no-results slds-p-around_small">{label.noResultsFound}</lightning-layout-item>
+          <!-- list -->
+          <template if:true={recordsForList.length} for:each={recordsForList} for:item="item"
+            for:index="index">
+             
+            <!-- <lightning-layout-item flexibility="auto" key={item.id}  class="fielo-incentives__list-item slds-p-around_small"> -->
+            <lightning-layout-item size="12" small-device-size="6" medium-device-size="4"
+               large-device-size="3"  key={item.id}
+              class="fielo-incentives__list-item slds-p-around_small">
+              <!-- header -->
+              <div class="fielo-incentives__list-item-header">
+                <img slot="title" class="fielo-incentives__list-item-image" src={item.image} onclick={handleClickListImage}
+                  data-index={index} />
+              </div>
+              <!-- body -->
+              <div class="fielo-incentives__list-item-body">
+                <h3 class="fielo-incentives__list-item-title" onclick={handleClickListTitle} data-index={index}>
+                  {item.title}</h3>
+                <lightning-formatted-rich-text value={item.description} class="fielo-incentives__list-item-description">
+                </lightning-formatted-rich-text>
+              </div>
+              <!-- footer -->
+              <div class="fielo-incentives__list-item-footer slds-is-relative slds-text-align_right">
+                <template if:true={showEligibilityButton}>
+                  <!-- Eligibility -->
+                  <lightning-button
+                    if:false={item.eligibility.eligible} 
+                    variant="base"
+                    label={label.eligibilityRequirements} 
+                    title={label.eligibilityRequirements} 
+                    data-index={index}
+                    onclick={handleClickEligibilityButton}
+                    class="fielo-incentives__list-item-button slds-m-right_small"
+                  ></lightning-button>
+                  <c-cc-eligibility if:true={item.eligibility.viewDashboard} position="bottom-right"
+                  description={item.eligibility.description}
+                  member-id={member.id} segment={item.eligibility.segment}></c-cc-eligibility>
+                </template>
+                <template if:true={showEnrollButton}>
+                  <!-- Enroll -->
+                  <lightning-button 
+                    if:true={item.eligibility.eligible}
+                    variant="base"
+                    label={label.enroll}
+                    title={label.enroll}
+                    data-index={index}
+                    onclick={handleClickEnroll}
+                    class="fielo-incentives__list-item-button slds-m-right_small"
+                  ></lightning-button>
+                </template>
+              </div>
+            </lightning-layout-item>
+          </template>
+          <!-- paginator -->
+          <lightning-layout-item if:true={recordsForList.length} size="12"
+            class="fielo-incentives__list-paginator slds-p-around_small">
+            <lightning-layout>
+              <lightning-layout-item size="4"></lightning-layout-item>
+              <lightning-layout-item>
+                <lightning-button class="fielo-incentives__list-previous-button" label="&lt;" title="&lt;"
+                  onclick={handleClickPrevious} disabled={disabledCondition.previousButton}>
+                </lightning-button>
+              </lightning-layout-item>
+              <lightning-layout-item alignment-bump="left">
+                <lightning-button class="fielo-incentives__list-next-button" label="&gt;" title="&gt;"
+                  onclick={handleClickNext} disabled={disabledCondition.nextButton}>
+                </lightning-button>
+              </lightning-layout-item>
+              <lightning-layout-item size="4"></lightning-layout-item>
+            </lightning-layout>
+          </lightning-layout-item>
+      </template>
+    </lightning-layout>
+    <!-- End list  -->
+
+    <!-- Init record detail  -->
+    <div if:true={record.id} class="fielo-incentives__record">
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+        aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container fielo-incentives__record-container">
+          <header class="slds-modal__header" style="padding: 0;">
+            <lightning-button-icon class="slds-modal__close" icon-name="utility:close" variant="bare-inverse"
+              alternative-text={label.close} title={label.close} onclick={handleClickCloseModal}></lightning-button-icon>
+            <div class="fielo-incentives__record-header">
+              <img slot="title" class="fielo-incentives__record-image" src={record.image} />
+            </div>
+          </header>
+          <div class="fielo-incentives__record-body slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+            <div class="fielo-incentives__record-title slds-text-heading_medium">{record.title}</div>
+            <div class="fielo-incentives__record-type slds-m-vertical_x-small">{record.type}&nbsp;</div>
+            <!-- dashboard -->
+            <lightning-layout class="fielo-incentives__record-dashboard">
+              <lightning-layout-item >
+                <div
+                  class="fielo-incentives__record-status-container slds-float_left slds-box slds-box_xx-small slds-m-right_x-small">
+                  <p class="fielo-incentives__record-status slds-p-horizontal_small">{record.status}</p>
+                </div>
+              </lightning-layout-item>
+              <lightning-layout-item>
+                <div class="fielo-incentives__record-period-container slds-float_left slds-box slds-box_xx-small slds-m-right_x-small">
+                  <p class="fielo-incentives__record-period slds-p-horizontal_small">
+                    <lightning-formatted-date-time time-zone="UTC" value={record.start} month="short" day="2-digit">
+                    </lightning-formatted-date-time> - <lightning-formatted-date-time time-zone="UTC" value={record.end} month="short"
+                      day="2-digit"></lightning-formatted-date-time>
+                  </p>
+                </div>
+              </lightning-layout-item>
+              <lightning-layout-item if:true={record.teams.length} class="fielo-incentives__record-teams-container"
+                 alignment-bump="left">
+                  <lightning-combobox options={record.teams} variant="label-hidden"
+                    class="fielo-incentives__record-teams" value={record.selectedTeam} dropdown-alignment="right" onchange={handleChangeTeam}>
+                  </lightning-combobox>
+              </lightning-layout-item>
+            </lightning-layout>
+            <!-- Overview -->
+            <lightning-tabset class="fielo-incentives__record-info">
+              <lightning-tab class="fielo-incentives__record-overview" label="Overview">
+                <label class="fielo-incentives__record-description-label">{label.description}</label>
+                <div class="fielo-incentives__record-field-info">
+                  <lightning-formatted-rich-text value={record.description}
+                    class="fielo-incentives__record-description-content"></lightning-formatted-rich-text>
+                </div>
+
+                <div if:true={record.moreFields.length} class="fielo-incentives__record-see-more-container">
+
+                  <lightning-button if:false={showMoreFields} class="fielo-incentives__record-see-more-button"
+                    variant="base" label={label.seeMore} title={label.seeMore} onclick={handleClickSeeMore}></lightning-button>
+                  <lightning-button if:true={showMoreFields} class="fielo-incentives__record-see-more-button"
+                    variant="base" label={label.seeLess} title={label.seeLess} onclick={handleClickSeeMore}></lightning-button>
+
+                  <template if:true={showMoreFields} for:each={record.moreFields} for:item="item" for:index="index">
+                    <div class="fielo-incentives__record-see-more-item" key={item.label}>
+                      <label class="fielo-incentives__record-see-more-item-label">{item.label}</label>
+                      <div class="fielo-incentives__record-field-info">
+                        <lightning-formatted-rich-text class="fielo-incentives__record-see-more-item-content"
+                          if:true={item.type.string} value={item.value}></lightning-formatted-rich-text>
+                        <lightning-formatted-date-time class="fielo-incentives__record-see-more-item-content"
+                          if:true={item.type.datetime} value={item.value} time-zone="UTC" year="2-digit" month="short"
+                          day="2-digit" hour="numeric" weekday="long" era="short"></lightning-formatted-date-time>
+                        <lightning-formatted-date-time class="fielo-incentives__record-see-more-item-content"
+                          if:true={item.type.date} value={item.value} year="numeric" month="short"
+                          day="2-digit" weekday="long" ></lightning-formatted-date-time>
+                        <lightning-input class="fielo-incentives__record-see-more-item-content"
+                          if:true={item.type.boolean} type="checkbox" checked={item.value} disabled></lightning-input>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </lightning-tab>
+
+              <lightning-tab label={label.missions} if:true={record.hasMission} class="fielo-incentives__record-missions">
+                <div class="fielo-incentives__record-mission-header">{label.missions} ({record.missions.length})</div>
+                <lightning-accordion  onsectiontoggle={handleSectionToggle}
+                  active-section-name={activeSections}>
+                  <template for:each={record.missions} for:item="mission" for:index="index">
+                    <lightning-accordion-section key={mission.id} name={mission.id} label={mission.name}>
+                      <lightning-layout slot="actions" style="width:50%">
+                        <lightning-layout-item size="6">
+                          <template if:true={mission.hasPeriod}>
+                            <div class="slds-clearfix">
+                              <div
+                                class="fielo-incentives__record-mission-period slds-float_left slds-box slds-box_xx-small slds-m-right_x-small">
+                                <lightning-formatted-date-time value={mission.start} time-zone="UTC" month="short"
+                                  day="2-digit"></lightning-formatted-date-time> - <lightning-formatted-date-time
+                                  value={mission.end} time-zone="UTC" month="short" day="2-digit">
+                                </lightning-formatted-date-time>
+                              </div>
+                            </div>
+                          </template>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6" style="padding-top: 10px;">
+                          <lightning-progress-bar if:true={mission.isTypeWithObjective} value={mission.progress.percentage} size="small" class="fielo-incentives__progress-bar">
+                          </lightning-progress-bar>
+                          <div if:false={mission.isTypeWithObjective} class="slds-text-align_right">{mission.progress.value}</div>
+                        </lightning-layout-item>
+                      </lightning-layout>
+                      
+                      <lightning-layout multiple-rows>
+                        <lightning-layout-item size="12" small-device-size={mission.descriptionSize} class="slds-p-bottom_small slds-p-horizontal_x-small">
+                          <lightning-formatted-rich-text class="fielo-incentives__record-mission-description"
+                            value={mission.description}> 
+                          </lightning-formatted-rich-text>
+                        </lightning-layout-item>
+                        <lightning-layout-item if:true={mission.hasLeaderboard} size="12" small-device-size="6" class="slds-p-horizontal_x-small fielo-incentives__mission-leaderboard">
+                          <ul>
+                            <template for:each={leaderboardInfo.leaderboard} for:item="item" for:index="index">
+                              <li key={item.position} class={item.className}>
+                                <lightning-layout vertical-align="center" class="slds-p-vertical_xx-small">
+                                  <lightning-layout-item size="2" class="slds-p-around_xx-small slds-align_absolute-center">{item.position}</lightning-layout-item>
+                                  <lightning-layout-item size="2" class="slds-p-around_xx-small slds-align_absolute-center">
+                                    <span class="slds-avatar slds-avatar_circle">
+                                      <img alt={item.name} src={item.img} title={item.name} />
+                                    </span>
+                                  </lightning-layout-item>
+                                  <lightning-layout-item size="6" class="slds-p-around_xx-small">{item.name}</lightning-layout-item>
+
+                                  <lightning-layout-item size="2" class="slds-p-around_xx-small slds-align_absolute-center">
+                                    <div if:true={mission.isTypeWithObjective}><lightning-progress-ring value={item.value} variant="active-step"> </lightning-progress-ring></div>
+                                    <div if:false={mission.isTypeWithObjective}>{item.value}</div>
+                                  </lightning-layout-item>
+
+                                </lightning-layout>
+                              </li>
+                            </template>
+                          </ul>
+                        </lightning-layout-item>
+                      </lightning-layout>
+                      
+                    </lightning-accordion-section>
+                  </template>
+                </lightning-accordion>
+              </lightning-tab>
+
+              <lightning-tab label={label.rules} if:true={record.hasRules} class="fielo-incentives__record-rules">
+                <div>{label.rules} ({record.rules.length})</div>
+                <lightning-accordion  onsectiontoggle={handleSectionToggle}
+                  active-section-name={activeSections}>
+                  <template for:each={record.rules} for:item="item" for:index="index">
+                    <lightning-accordion-section key={item.id} name={item.id} label={item.name}>
+                      <p>
+                        <lightning-formatted-rich-text value={item.description}></lightning-formatted-rich-text>
+                      </p>
+                    </lightning-accordion-section>
+                  </template>
+                </lightning-accordion>
+              </lightning-tab>
+
+            </lightning-tabset>
+
+          </div>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open" onclick={handleClickCloseModal}></div>
+    </div>
+    <!-- End record detail  -->
+  </div>
+
+  <!-- Agreement modal -->
+  <div if:true={showAgreement}>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+      aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container fielo-incentives__agreement-container">
+        <header class="slds-modal__header" style="padding: 0;">
+          <lightning-button-icon class="slds-modal__close" icon-name="utility:close" variant="bare-inverse"
+            alternative-text={label.close} title={label.close} onclick={handleClickCloseModal}></lightning-button-icon>
+            <lightning-layout>
+              <lightning-layout-item flexibility="auto" class="slds-text-align_left slds-p-around_medium">
+                <div class="slds-modal__title slds-text-heading_medium">{agreement.title}</div>
+              </lightning-layout-item>
+              <lightning-layout-item size="4" class="slds-text-align_right slds-p-around_medium">
+                <lightning-formatted-date-time class="fielo-incentives__record-see-more-item-content"
+                  value={agreement.date} year="numeric" month="short" day="2-digit" ></lightning-formatted-date-time>
+              </lightning-layout-item>
+            </lightning-layout>
+        </header>
+        <div class="fielo-incentives__agreement-modal slds-modal__content slds-p-around_medium">
+          <lightning-formatted-rich-text value={agreement.text}></lightning-formatted-rich-text>
+        </div>
+        <footer class="slds-modal__footer">
+          <button class="slds-button slds-button_neutral" onclick={handleClickCloseModal}>{label.cancel}</button>
+          <button class="slds-button slds-button_brand" onclick={handleClickAgree} data-index={agreement.index}>{label.agree}</button>
+        </footer>
+      </div>
+
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" onclick={handleClickCloseModal}></div>
+  </div>
+
+  <!-- spinner -->
+  <div if:false={loaded}>
+    <div class="slds-backdrop slds-backdrop_open">
+      <lightning-spinner alternative-text="Loading" size="medium" variant="brand" class="slds-is-static"></lightning-spinner>
+    </div>
+  </div>
+
+</template>

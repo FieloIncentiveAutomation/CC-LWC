@@ -1,0 +1,15 @@
+.fielo-field-section {
+    display:inline-block;
+}
+.fielo-fields-container {
+
+}
+.fielo-field-column {
+
+}
+.fielo-field-title {
+    font-size: .75rem;
+    line-height: 1.25;
+    color: #54698d;
+    margin-bottom: .25rem;
+}

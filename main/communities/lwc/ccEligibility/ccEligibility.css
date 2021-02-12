@@ -1,0 +1,16 @@
+.fielo-cc-progress {
+    background-color: white;
+    border-radius: 5px;
+}
+.fielo-cc-progress--position-bottom-right {
+    position: absolute;
+    width: 350px;
+    z-index: 90;
+    top: 100%;
+    left: 50%;
+    margin-bottom: 20px;
+}
+
+.fielo-cc-progress__container {
+    border-radius: 5px;
+}
