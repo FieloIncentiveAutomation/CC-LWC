@@ -57,19 +57,19 @@ const STATUS_ALL = 'All';
 const STATUS_ACTIVE = 'Active';
 
 const SORT_BY_OPTIONS = [{
-    label: sortByNewestFirst,
-    value: 'Newest First'
-  },
-  {
-    label: sortByOldestFirst,
-    value: 'Oldest First'
-  },{
-    label: myRecentActivity,
-    value: 'My Recent Activity'
-  },{
-    label: myPastActivity,
-    value: 'My Past Activity'
-  }
+  label: sortByNewestFirst,
+  value: 'Newest First'
+},
+{
+  label: sortByOldestFirst,
+  value: 'Oldest First'
+}, {
+  label: myRecentActivity,
+  value: 'My Recent Activity'
+}, {
+  label: myPastActivity,
+  value: 'My Past Activity'
+}
 ];
 
 const INCENTIVES_GROUPS = {
@@ -214,12 +214,12 @@ export default class CcIncentives extends LightningElement {
    * @param {*} param0
    */
   @wire(getIncentives, { params: '$getIncentivesParams' })
-  incentives (value) {
+  incentives(value) {
     // Hold on to the provisioned value so we can refresh it later.
     this.incentivesValue = value; // track the provisioned value
-    const {data,error} = value; // destructure the provisioned value
+    const { data, error } = value; // destructure the provisioned value
     if (error) {
-      console.warn(JSON.stringify(error, '' , 2));
+      console.warn(JSON.stringify(error, '', 2));
     }
     if (data) {
       let items = [];
@@ -233,7 +233,7 @@ export default class CcIncentives extends LightningElement {
       if (data.length === this.getIncentivesParams.recordsPerPage) {
         this.disabledCondition.nextButton = false;
         // once paginator state is calculated we'll remove the last item wich we don't need
-        items = data.slice(0,-1);
+        items = data.slice(0, -1);
       } else {
         this.disabledCondition.nextButton = true;
         items = data;
@@ -270,7 +270,7 @@ export default class CcIncentives extends LightningElement {
 
         let moreFieldsValues = {};
 
-        this.recordMoreFields.split(',').forEach(itemMD=>{
+        this.recordMoreFields.split(',').forEach(itemMD => {
           moreFieldsValues[itemMD] = item[itemMD];
         });
 
@@ -315,13 +315,13 @@ export default class CcIncentives extends LightningElement {
    */
 
   @wire(getFieldData, { objectName: '$objectName', fieldNames: '$objectFields', enableDependentPicklist: false })
-  fieldData ({error,data}) {
-    if (error){
+  fieldData({ error, data }) {
+    if (error) {
       console.log(error);
     }
-    if (data){
+    if (data) {
       JSON.parse(data).fields.forEach(field => {
-        if(field.picklistentries){
+        if (field.picklistentries) {
           field.picklistentries.unshift(
             {
               label: STATUS_ALL,
@@ -332,7 +332,7 @@ export default class CcIncentives extends LightningElement {
             label: field.attributes.label,
             picklistentries: field.picklistentries
           }
-        }else{
+        } else {
           this.metadata[field.attributes.name] = {
             type: field.attributes.type,
             label: field.attributes.label
@@ -340,9 +340,9 @@ export default class CcIncentives extends LightningElement {
         }
       });
 
-      this.metadata.FieloPLT__Status__c.picklistentries.forEach(function(item, key){
-        if (item.value === 'Draft'){
-          this.metadata.FieloPLT__Status__c.picklistentries.splice( key, 1 );
+      this.metadata.FieloPLT__Status__c.picklistentries.forEach(function (item, key) {
+        if (item.value === 'Draft') {
+          this.metadata.FieloPLT__Status__c.picklistentries.splice(key, 1);
         }
       }.bind(this));
 
@@ -368,38 +368,38 @@ export default class CcIncentives extends LightningElement {
           case 'datetime': fieldType = 'date'; break;
         }
 
-        if (item === "FieloPLT__StartDate__c"){
+        if (item === "FieloPLT__StartDate__c") {
           type.startDate = true;
-        }else{
-          if (item === "FieloPLT__EndDate__c"){
+        } else {
+          if (item === "FieloPLT__EndDate__c") {
             type.endDate = true;
-          }else{
-            if (this.metadata[item]){
+          } else {
+            if (this.metadata[item]) {
               type[fieldType] = true;
-              if (  this.metadata[item].type === 'number' ||
-                    this.metadata[item].type === 'date' ||
-                    this.metadata[item].type === 'datetime' ) {
+              if (this.metadata[item].type === 'number' ||
+                this.metadata[item].type === 'date' ||
+                this.metadata[item].type === 'datetime') {
                 isRange = true;
               }
             }
           }
         }
 
-        if (this.metadata[item]){
+        if (this.metadata[item]) {
           this.filterDataObject[item] = {
             name: item,
-            rangeStart: item+'_start',
-            rangeEnd: item+'_end',
+            rangeStart: item + '_start',
+            rangeEnd: item + '_end',
             label: this.metadata[item].label,
             type,
             fieldType,
             isRange,
             picklistentries: this.metadata[item].picklistentries
           }
-          if (fieldType === 'picklist'){
+          if (fieldType === 'picklist') {
             this.filterDataObject[item].value = STATUS_ALL;
           }
-        }else{
+        } else {
           console.warn(item + ' does not exist or do not have permissons');
         }
       });
@@ -416,7 +416,7 @@ export default class CcIncentives extends LightningElement {
         value: 'Active',
         operator: 'equal',
         andOrOperator: '',
-        openPars : '('
+        openPars: '('
       }
 
       this.filters.FieloPLT__Status__c_Edited = {
@@ -442,11 +442,11 @@ export default class CcIncentives extends LightningElement {
 
     // subscribe to memberChange event
     registerListener('memberChange', this.handleMemberChange, this);
-      if (this.member.id === '') {
-        // be sure to show the spinner
-        this.loaded = false;
-        fireEvent(this.pageRef, 'getMember', '');
-      }
+    if (this.member.id === '') {
+      // be sure to show the spinner
+      this.loaded = false;
+      fireEvent(this.pageRef, 'getMember', '');
+    }
   }
 
   /**
@@ -476,7 +476,7 @@ export default class CcIncentives extends LightningElement {
    * Handles the click of the previous button (paginator)
    * @param {*} event
    */
-  handleClickPrevious () {
+  handleClickPrevious() {
     if (this.getIncentivesParams.offset > 0) {
       // -1 to balance for the added one for calculating the disable condition
       this.updateIncentivesParams({
@@ -489,10 +489,10 @@ export default class CcIncentives extends LightningElement {
    * Handles the click of the next button (paginator)
    * @param {*} event
    */
-  handleClickNext () {
+  handleClickNext() {
     // -1 to balance for the added one for calculating the disable condition
     this.updateIncentivesParams({
-      offset: this.getIncentivesParams.offset + this.getIncentivesParams.recordsPerPage -1
+      offset: this.getIncentivesParams.offset + this.getIncentivesParams.recordsPerPage - 1
     });
   }
 
@@ -505,14 +505,14 @@ export default class CcIncentives extends LightningElement {
       this.member = payload.member;
       this.member.id = this.member.Id;
 
-      this.updateIncentivesParams({memberId: this.member.id});
+      this.updateIncentivesParams({ memberId: this.member.id });
     }
   }
   /**
    * Updates the params in order to fire the wire again
    * @param {*} params
    */
-  updateIncentivesParams(params){
+  updateIncentivesParams(params) {
     this.loaded = false;
     this.recordsForList = [];
     this.getIncentivesParams = Object.assign({}, this.getIncentivesParams, params);
@@ -533,26 +533,26 @@ export default class CcIncentives extends LightningElement {
       // More Fields
       var moreFields = [];
 
-      if(this.recordMoreFields) {
-        this.recordMoreFields.split(',').forEach(item=>{
-          if(this.metadata[item]) {
+      if (this.recordMoreFields) {
+        this.recordMoreFields.split(',').forEach(item => {
+          if (this.metadata[item]) {
             let label = this.metadata[item].label;
             let value = this.record[item];
-            if (this.metadata[item].type == 'datetime'){
+            if (this.metadata[item].type == 'datetime') {
               value = new Date(value).valueOf();
             }
             switch (this.metadata[item].type) {
               case "date":
               case "datetime":
               case "boolean":
-              this.metadata[item].type = this.metadata[item].type; break;
+                this.metadata[item].type = this.metadata[item].type; break;
               default:
-              this.metadata[item].type = 'string'; break;
+                this.metadata[item].type = 'string'; break;
             }
             let type = {
               date: false,
               datetime: false,
-              string:false,
+              string: false,
               boolean: false
             }
             type[this.metadata[item].type] = true;
@@ -567,90 +567,91 @@ export default class CcIncentives extends LightningElement {
       }
       this.record.moreFields = moreFields;
       // get missions, ranks, rules, etc
-      try{
+      try {
         this.getIncentiveDetailParams = {
           params: {
             type: this.record.type,
             id: this.record.id,
             memberId: this.member.id
-          }}
+          }
+        }
       }
 
-      catch(e){
+      catch (e) {
         console.error(e);
       }
 
 
-    getIncentiveDetail(this.getIncentiveDetailParams)
-      .then(data => {
-        this.record.progress = data.progress;
-        this.record.missions = [];
-        this.record.missionsObject = {};
-        this.record.rules = [];
-        this.record.hasMission = false;
-        this.record.hasRules = false;
+      getIncentiveDetail(this.getIncentiveDetailParams)
+        .then(data => {
+          this.record.progress = data.progress;
+          this.record.missions = [];
+          this.record.missionsObject = {};
+          this.record.rules = [];
+          this.record.hasMission = false;
+          this.record.hasRules = false;
 
-        if (data.missions){
-          this.record.hasMission = true;
-          data.missions.forEach(item => {
-            var hasPeriod = false;
-            if( item.FieloPLT__StartDate__c || item.FieloPLT__EndDate__c){
-              hasPeriod = true;
-            }
-            let progress = {};
-            progress.porcentage = 0;
-            progress.value = 0;
-            if( this.record.progress.hasOwnProperty(this.record.selectedTeam) || this.record.progress.hasOwnProperty(this.member.id) ){
-              progress = Object.assign(
-                {},progress,this.record.progress[this.record.selectedTeam || this.member.id].missions[item.Id]
-              );
-            }
-            if ( progress.objectiveValue && progress.type === "With Objective" ) {
-              progress.percentage =
-                progress.value * 100 /
-                progress.objectiveValue;
-            }
+          if (data.missions) {
+            this.record.hasMission = true;
+            data.missions.forEach(item => {
+              var hasPeriod = false;
+              if (item.FieloPLT__StartDate__c || item.FieloPLT__EndDate__c) {
+                hasPeriod = true;
+              }
+              let progress = {};
+              progress.porcentage = 0;
+              progress.value = 0;
+              if (this.record.progress.hasOwnProperty(this.record.selectedTeam) || this.record.progress.hasOwnProperty(this.member.id)) {
+                progress = Object.assign(
+                  {}, progress, this.record.progress[this.record.selectedTeam || this.member.id].missions[item.Id]
+                );
+              }
+              if (progress.objectiveValue && progress.type === "With Objective") {
+                progress.percentage =
+                  progress.value * 100 /
+                  progress.objectiveValue;
+              }
 
-            this.record.missionsObject[item.Id] = {
-              id: item.Id,
-              name: item.Name,
-              description: item.FieloPLT__Description__c,
-              hasPeriod: hasPeriod,
-              start: item.FieloPLT__StartDate__c,
-              end: item.FieloPLT__EndDate__c,
-              isTypeWithObjective: item.FieloPLT__Type__c === 'With Objective' ? true : false,
-              hasLeaderboard: item.FieloPLT__LeaderboardMode__c || false,
-              descriptionSize: item.FieloPLT__LeaderboardMode__c ? '6' : '12',
-              progress: progress
-            };
-
-            this.record.missions.push(this.record.missionsObject[item.Id]);
-
-          })
-        }
-        if (data.rules){
-          this.record.hasRules = true;
-          data.rules.forEach(item => {
-            this.record.rules.push(
-              {
+              this.record.missionsObject[item.Id] = {
                 id: item.Id,
                 name: item.Name,
-                description: item.FieloPLT__Description__c
-              }
-            );
-          })
-        }
-      })
-      .catch(error => {
-        console.warn(JSON.stringify(error, '', 2));
-      })
+                description: item.FieloPLT__Description__c,
+                hasPeriod: hasPeriod,
+                start: item.FieloPLT__StartDate__c,
+                end: item.FieloPLT__EndDate__c,
+                isTypeWithObjective: item.FieloPLT__Type__c === 'With Objective' ? true : false,
+                hasLeaderboard: item.FieloPLT__LeaderboardMode__c || false,
+                descriptionSize: item.FieloPLT__LeaderboardMode__c ? '6' : '12',
+                progress: progress
+              };
+
+              this.record.missions.push(this.record.missionsObject[item.Id]);
+
+            })
+          }
+          if (data.rules) {
+            this.record.hasRules = true;
+            data.rules.forEach(item => {
+              this.record.rules.push(
+                {
+                  id: item.Id,
+                  name: item.Name,
+                  description: item.FieloPLT__Description__c
+                }
+              );
+            })
+          }
+        })
+        .catch(error => {
+          console.warn(JSON.stringify(error, '', 2));
+        })
     } else {
       this.record = {};
     }
   }
 
   handleClickCloseModal() {
-    this.record= {};
+    this.record = {};
     this.showMoreFields = false;
     this.showAgreement = false;
   }
@@ -659,93 +660,93 @@ export default class CcIncentives extends LightningElement {
     this.showMoreFields = !this.showMoreFields;
   }
 
-  handleClickEligibilityButton(event){
+  handleClickEligibilityButton(event) {
     this.recordsForList[event.currentTarget.dataset.index]
       .eligibility.viewDashboard =
-        !this.recordsForList[event.currentTarget.dataset.index]
-          .eligibility.viewDashboard;
+      !this.recordsForList[event.currentTarget.dataset.index]
+        .eligibility.viewDashboard;
   }
 
-  handleClickEnroll (event){
+  handleClickEnroll(event) {
     let index = event.currentTarget.dataset.index;
-    if (this.recordsForList[index].subscriptionMode === 'Global'){
+    if (this.recordsForList[index].subscriptionMode === 'Global') {
       const toast = new ShowToastEvent({
         title: this.label.enrollGlobalMessage,
         variant: 'warning'
       });
       this.dispatchEvent(toast);
-    }else{
-      if (this.recordsForList[index].agreementId){
+    } else {
+      if (this.recordsForList[index].agreementId) {
 
         getRecords({
           fields: 'FieloPLT__Agreement__c,LastModifiedDate',
           objectName: 'FieloPLT__Agreement__c',
           dataFilters: JSON.stringify({ Id: this.recordsForList[index].agreementId })
         })
-        .then(result => {
-          this.agreement.title = this.recordsForList[index].title;
-          this.agreement.date = result[0].LastModifiedDate;
-          this.agreement.text = result[0].FieloPLT__Agreement__c;
-          this.agreement.index = index;
-          this.showAgreement = true;
-        })
-        .catch(error => {
-          console.log(error);
-          const toast = new ShowToastEvent({
-            title: error,
-            variant: 'error'
+          .then(result => {
+            this.agreement.title = this.recordsForList[index].title;
+            this.agreement.date = result[0].LastModifiedDate;
+            this.agreement.text = result[0].FieloPLT__Agreement__c;
+            this.agreement.index = index;
+            this.showAgreement = true;
+          })
+          .catch(error => {
+            console.log(error);
+            const toast = new ShowToastEvent({
+              title: error,
+              variant: 'error'
+            });
+            this.dispatchEvent(toast);
           });
-          this.dispatchEvent(toast);
-        });
 
-      }else{
+      } else {
         this.doEnroll(index);
       }
     }
 
   }
 
-  handleClickAgree (event){
+  handleClickAgree(event) {
     let index = event.currentTarget.dataset.index;
     this.doEnroll(index);
     this.handleClickCloseModal();
   }
 
-  doEnroll (index){
+  doEnroll(index) {
     this.loaded = false;
     enroll({
-      params:{
+      params: {
         memberId: this.member.id,
         incentiveId: this.recordsForList[index].id,
         agreementId: this.recordsForList[index].agreementId,
         type: this.recordsForList[index].type
       }
     })
-    .then(result => {
+      .then(result => {
 
-      const toast = new ShowToastEvent({
-        title: this.label.subscription + ' ' + this.recordsForList[index].title,
-        variant: 'success'
-      });
-      this.dispatchEvent(toast);
+        const toast = new ShowToastEvent({
+          title: this.label.subscription + ' ' + this.recordsForList[index].title,
+          variant: 'success'
+        });
+        this.dispatchEvent(toast);
 
-      refreshApex(this.incentivesValue);
-    })
-    .catch(error => {
-      console.log(error);
-      const toast = new ShowToastEvent({
-        title: error,
-        variant: 'error'
+        refreshApex(this.incentivesValue);
+      })
+      .catch(error => {
+        console.log(error);
+        const toast = new ShowToastEvent({
+          title: error,
+          variant: 'error'
+        });
+        this.dispatchEvent(toast);
       });
-      this.dispatchEvent(toast);
-    });
   }
 
   /**
    * Handles the change of the sortBy filter
    * @param {*} event
    */
-  handleChangeSortBy (event) {
+  handleChangeSortBy(event) {
     let orderBy = null;
     let orderByMemberActivity = null;
     let offset = 0;
@@ -787,11 +788,11 @@ export default class CcIncentives extends LightningElement {
       if (event.currentTarget.dataset.range === 'start') {
         this.filterDataObject[event.currentTarget.dataset.fieldName].valueStart =
           event.currentTarget.value;
-      }else{
+      } else {
         this.filterDataObject[event.currentTarget.dataset.fieldName].valueEnd =
           event.currentTarget.value;
       }
-    }else{
+    } else {
       this.filterDataObject[event.currentTarget.dataset.fieldName].value =
         event.currentTarget.value;
     }
@@ -828,35 +829,35 @@ export default class CcIncentives extends LightningElement {
     }
   }
 
-  handleFilterStatus (event) {
+  handleFilterStatus(event) {
     if (event.currentTarget.value == STATUS_ALL) {
       delete this.filters.FieloPLT__Status__c;
       delete this.filters.FieloPLT__Status__c_Edited;
-    }else{
+    } else {
       this.filters.FieloPLT__Status__c = {
         field: 'FieloPLT__Status__c',
         value: event.currentTarget.value,
         operator: 'equal',
         andOrOperator: ''
       }
-      if(event.currentTarget.value == 'Active'){
-        this.filters.FieloPLT__Status__c.openPars= '(';
+      if (event.currentTarget.value == 'Active') {
+        this.filters.FieloPLT__Status__c.openPars = '(';
 
         this.filters.FieloPLT__Status__c_Edited = {
           field: 'FieloPLT__Status__c',
           value: 'Edited',
           operator: 'equal',
           andOrOperator: 'OR',
-          closePars:')'
+          closePars: ')'
         }
       }
     }
     this.setFilter();
   }
-  handleFilterTypePicklist (event) {
+  handleFilterTypePicklist(event) {
     if (event.currentTarget.value == STATUS_ALL) {
       delete this.filters[event.currentTarget.name];
-    }else{
+    } else {
       this.filters[event.currentTarget.name] = {
         field: event.currentTarget.name,
         value: event.currentTarget.value,
@@ -867,7 +868,7 @@ export default class CcIncentives extends LightningElement {
     this.setFilter();
   }
 
-  handleFilterStart (event) {
+  handleFilterStart(event) {
     if (event.currentTarget.value) {
       this.filters.FieloPLT__StartDate__c = {
         field: 'FieloPLT__StartDate__c',
@@ -875,13 +876,13 @@ export default class CcIncentives extends LightningElement {
         operator: 'greater or equal',
         andOrOperator: ''
       }
-    }else{
+    } else {
       delete this.filters.FieloPLT__StartDate__c;
     }
     this.setFilter();
   }
 
-  handleFilterEnd (event) {
+  handleFilterEnd(event) {
     if (event.currentTarget.value) {
       this.filters.FieloPLT__EndDate__c = {
         field: 'FieloPLT__EndDate__c',
@@ -889,13 +890,13 @@ export default class CcIncentives extends LightningElement {
         operator: 'less or equal',
         andOrOperator: ''
       }
-    }else{
+    } else {
       delete this.filters.FieloPLT__EndDate__c;
     }
     this.setFilter();
   }
 
-  handleFilterTypeRange (event) {
+  handleFilterTypeRange(event) {
     let operator = 'greater or equal';
     if (event.currentTarget.dataset.range === 'end') {
       operator = 'less or equal';
@@ -907,13 +908,13 @@ export default class CcIncentives extends LightningElement {
         operator,
         andOrOperator: ''
       }
-    }else{
+    } else {
       delete this.filters[event.currentTarget.name];
     }
     this.setFilter();
   }
 
-  handleFilterTypeString (event) {
+  handleFilterTypeString(event) {
     if (event.currentTarget.value) {
       this.filters[event.currentTarget.name] = {
         field: event.currentTarget.name,
@@ -921,13 +922,13 @@ export default class CcIncentives extends LightningElement {
         operator: 'equal',
         andOrOperator: ''
       }
-    }else{
+    } else {
       delete this.filters[event.currentTarget.name];
     }
     this.setFilter();
   }
 
-  handleFilterTypeBoolean (event) {
+  handleFilterTypeBoolean(event) {
     this.filters[event.currentTarget.name] = {
       field: event.currentTarget.name,
       value: event.currentTarget.checked,
@@ -937,14 +938,14 @@ export default class CcIncentives extends LightningElement {
     this.setFilter();
   }
 
-  setFilter () {
+  setFilter() {
     let offset = 0;
     let filters = Object.values(this.filters);
     console.log(filters);
-    this.updateIncentivesParams({filters,offset});
+    this.updateIncentivesParams({ filters, offset });
   }
 
-  handleChangeListedIncentives (event) {
+  handleChangeListedIncentives(event) {
     if (event.currentTarget.value) {
       let setName = this.listedIncentive = event.currentTarget.value;
       // show Enroll / Eligibility buttons
@@ -1062,13 +1063,13 @@ export default class CcIncentives extends LightningElement {
         labelName: this.componentTitle.slice(6),
         language: LANGUAGE
       })
-      .then(label => {
-        this.componentTitle = label;
-      })
-      .catch(error => {
-        console.log(error);
-        this.componentTitle = '';
-      });
+        .then(label => {
+          this.componentTitle = label;
+        })
+        .catch(error => {
+          console.log(error);
+          this.componentTitle = '';
+        });
     }
   }
 
@@ -1111,51 +1112,51 @@ export default class CcIncentives extends LightningElement {
     // avoids calling getFieldData with an objectName defined and without more fields
     // if this isn't done this way, all the metadata will be fetch
     if (this.filterMoreFields) {
-      this.fieldsetToBeCall ++;
+      this.fieldsetToBeCall++;
       getFieldSet({
         objectApiName: objectName,
         fieldSetName: this.filterMoreFields
       })
-      .then(result => {
-        this.filterMoreFields = result.join();
-        this.filterFields += ',' + result.join();
+        .then(result => {
+          this.filterMoreFields = result.join();
+          this.filterFields += ',' + result.join();
 
-        if (this.objectFields !== '' ) {
-          this.objectFields += ',';
-        }
-        this.objectFields += this.filterFields;
-        this.fieldsetCalls ++;
-        if ( this.fieldsetCalls === this.fieldsetToBeCall ) {
-          this.objectName = objectName;
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+          if (this.objectFields !== '') {
+            this.objectFields += ',';
+          }
+          this.objectFields += this.filterFields;
+          this.fieldsetCalls++;
+          if (this.fieldsetCalls === this.fieldsetToBeCall) {
+            this.objectName = objectName;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     } else {
       this.objectFields = this.filterFields;
     }
     if (this.recordMoreFields) {
-      this.fieldsetToBeCall ++;
+      this.fieldsetToBeCall++;
       getFieldSet({
         objectApiName: objectName,
         fieldSetName: this.recordMoreFields
       })
-      .then(result => {
-        this.recordMoreFields = result.join();
+        .then(result => {
+          this.recordMoreFields = result.join();
 
-        if (this.objectFields !== '' ) {
-          this.objectFields += ',';
-        }
-        this.objectFields += this.recordMoreFields;
-        this.fieldsetCalls ++;
-        if ( this.fieldsetCalls === this.fieldsetToBeCall ) {
-          this.objectName = objectName;
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+          if (this.objectFields !== '') {
+            this.objectFields += ',';
+          }
+          this.objectFields += this.recordMoreFields;
+          this.fieldsetCalls++;
+          if (this.fieldsetCalls === this.fieldsetToBeCall) {
+            this.objectName = objectName;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
     this.objectName = objectName;
   }
@@ -1176,64 +1177,64 @@ export default class CcIncentives extends LightningElement {
     this.leaderboardInfo.leaderboard = [];
     this.leaderboardInfo.myPosition = {};
     getMissionLeaderboard({
-      params:{
+      params: {
         memberId: this.record.selectedTeam || this.member.id,
         missionId: this.leaderboardInfo.missionId
       }
     })
-    .then(result => {
-      if (result.length) {
-        let value = this.leaderboardInfo.isTypeWithObjective ? result[0].FieloPLT__LeaderboardValue__c * 100 : result[0].FieloPLT__LeaderboardValue__c;
-        this.leaderboardInfo.myPosition = {
-          position: result[0].FieloPLT__LeaderboardPosition__c,
-          name: result[0].FieloPLT__ChallengeMember__r.FieloPLT__Member__r.Name,
-          img: result[0].FieloPLT__ChallengeMember__r.FieloPLT__Member__r.FieloPLT__ExternalURL__c || DEFAULT_INCENTIVE_IMAGE+'/images/member.png',
-          value,
-          className: 'fielo-incentives__mission-leaderboard-item fielo-incentives__mission-leaderboard-item--is-my-position'
-        }
-      }
-
-      getMissionLeaderboard({
-        params:{
-          memberId: null,
-          missionId: this.leaderboardInfo.missionId
-        }
-      })
       .then(result => {
         if (result.length) {
-          let addMyPosition = true;
-          let value = 0;
-          result.forEach(position =>{
-            value = this.leaderboardInfo.isTypeWithObjective ? position.FieloPLT__LeaderboardValue__c * 100 : position.FieloPLT__LeaderboardValue__c;
-            this.leaderboardInfo.leaderboard.push(
-              {
-                position: position.FieloPLT__LeaderboardPosition__c,
-                name: position.FieloPLT__ChallengeMember__r.FieloPLT__Member__r.Name,
-                img: position.FieloPLT__ChallengeMember__r.FieloPLT__Member__r.FieloPLT__ExternalURL__c || DEFAULT_INCENTIVE_IMAGE+'/images/member.png',
-                value,
-                className: position.FieloPLT__LeaderboardPosition__c == this.leaderboardInfo.myPosition.position ? 'fielo-incentives__mission-leaderboard-item fielo-incentives__mission-leaderboard-item--is-my-position' : 'fielo-incentives__mission-leaderboard-item'
-              }
-            )
-            if ( position.FieloPLT__LeaderboardPosition__c == this.leaderboardInfo.myPosition.position && addMyPosition) {
-              addMyPosition = false;
-            }
-            if (!this.leaderboardInfo.myPosition.position){
-              addMyPosition = false;
-            }
-          })
-          if (addMyPosition){
-            this.leaderboardInfo.leaderboard.push(this.leaderboardInfo.myPosition);
+          let value = this.leaderboardInfo.isTypeWithObjective ? result[0].FieloPLT__LeaderboardValue__c * 100 : result[0].FieloPLT__LeaderboardValue__c;
+          this.leaderboardInfo.myPosition = {
+            position: result[0].FieloPLT__LeaderboardPosition__c,
+            name: result[0].FieloPLT__ChallengeMember__r.FieloPLT__Member__r.Name,
+            img: result[0].FieloPLT__ChallengeMember__r.FieloPLT__Member__r.FieloPLT__ExternalURL__c || DEFAULT_INCENTIVE_IMAGE + '/images/member.png',
+            value,
+            className: 'fielo-incentives__mission-leaderboard-item fielo-incentives__mission-leaderboard-item--is-my-position'
           }
         }
+
+        getMissionLeaderboard({
+          params: {
+            memberId: null,
+            missionId: this.leaderboardInfo.missionId
+          }
+        })
+          .then(result => {
+            if (result.length) {
+              let addMyPosition = true;
+              let value = 0;
+              result.forEach(position => {
+                value = this.leaderboardInfo.isTypeWithObjective ? position.FieloPLT__LeaderboardValue__c * 100 : position.FieloPLT__LeaderboardValue__c;
+                this.leaderboardInfo.leaderboard.push(
+                  {
+                    position: position.FieloPLT__LeaderboardPosition__c,
+                    name: position.FieloPLT__ChallengeMember__r.FieloPLT__Member__r.Name,
+                    img: position.FieloPLT__ChallengeMember__r.FieloPLT__Member__r.FieloPLT__ExternalURL__c || DEFAULT_INCENTIVE_IMAGE + '/images/member.png',
+                    value,
+                    className: position.FieloPLT__LeaderboardPosition__c == this.leaderboardInfo.myPosition.position ? 'fielo-incentives__mission-leaderboard-item fielo-incentives__mission-leaderboard-item--is-my-position' : 'fielo-incentives__mission-leaderboard-item'
+                  }
+                )
+                if (position.FieloPLT__LeaderboardPosition__c == this.leaderboardInfo.myPosition.position && addMyPosition) {
+                  addMyPosition = false;
+                }
+                if (!this.leaderboardInfo.myPosition.position) {
+                  addMyPosition = false;
+                }
+              })
+              if (addMyPosition) {
+                this.leaderboardInfo.leaderboard.push(this.leaderboardInfo.myPosition);
+              }
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
       })
       .catch(error => {
         console.log(error);
       });
-
-    })
-    .catch(error => {
-      console.log(error);
-    });
   }
 
   handleChangeTeam(event) {
@@ -1242,14 +1243,14 @@ export default class CcIncentives extends LightningElement {
     this.getLeaderboard();
   }
 
-  updateMissionProgress(){
+  updateMissionProgress() {
     this.record.missions.forEach(mission => {
       let percentage = parseFloat(this.record.progress[this.record.selectedTeam].missions[mission.id].value) * 100 /
         parseFloat(this.record.progress[this.record.selectedTeam].missions[mission.id].objectiveValue);
 
       mission.progress = Object.assign({},
-        this.record.progress[this.record.selectedTeam].missions[mission.id],{percentage}
-         );
+        this.record.progress[this.record.selectedTeam].missions[mission.id], { percentage }
+      );
 
       this.record.missionsObject[mission.id] = mission;
     });
