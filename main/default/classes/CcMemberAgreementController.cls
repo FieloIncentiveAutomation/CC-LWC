@@ -5,19 +5,19 @@ public without sharing class CcMemberAgreementController {
         Map<String,Object> agreements = new Map<String,Object>();
 
         if (memberId == null){
-            return null; 
+            return null;
         }else{
             List<Map<String,Object>> incentives = new List<Map<String,Object>>();
             agreements.put('program', new Map<String,Object>());
             agreements.put('incentives', incentives);
-            
-            List<Agreement__c> allAgreements = AgreementService.getAgreementsToBeAcceptedByMember(memberId);
 
-            for(Agreement__c agreement : allAgreements) {
+            List<FieloPLT__Agreement__c> allAgreements = FieloPLT.MemberAPI.getAgreements(memberId);
+
+            for(FieloPLT__Agreement__c agreement : allAgreements) {
                 Map<String,Object> agreementItem = new Map<String,Object>();
                 agreementItem.put('agreementId', agreement.Id);
                 agreementItem.put('agreementText',agreement.FieloPLT__Agreement__c);
-                
+
                 if (agreement.FieloPLT__Challenge__c != null) {
                     agreementItem.put('title', agreement.FieloPLT__Challenge__r.Name);
                     agreementItem.put('recordId', agreement.FieloPLT__Challenge__c);
@@ -35,6 +35,21 @@ public without sharing class CcMemberAgreementController {
             agreements.put('incentives', incentives);
             return agreements;
         }
-        
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean acceptAgreement(Id memberId, Id recordId) {
+        try{
+            Map<Id,Map<Id, String>> errorMessageMap = FieloPLT.IncentivesAPI.enroll(new Map<Id, Set<Id>>{memberId => new Set<Id>{recordId}}, false);
+            if(!errorMessageMap.isEmpty()){
+                return true;
+            }else{
+                return false;
+            }
+        } catch(DMLException e) {
+            throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 }

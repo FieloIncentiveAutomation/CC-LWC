@@ -1,15 +1,15 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import getAgreements from '@salesforce/apex/CcMemberAgreementController.getAgreements';
-import acceptAgreement from '@salesforce/apex/AgreementService.acceptAgreement';
+import acceptAgreement from '@salesforce/apex/CcMemberAgreementController.acceptAgreement';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
 // Labels
-import agree from '@salesforce/label/c.Agree';
+/*import agree from '@salesforce/label/c.Agree';
 import agreement from '@salesforce/label/c.Agreement';
 import genericError from '@salesforce/label/c.GenericError';
 import incentives from '@salesforce/label/c.Incentives';
-import program from '@salesforce/label/c.Program';
+import program from '@salesforce/label/c.Program';*/
 
 export default class CcMemberAgreement extends LightningElement {
 
@@ -24,11 +24,11 @@ export default class CcMemberAgreement extends LightningElement {
 
   // Custom labels
   label = {
-    agree,
+    /*agree,
     agreement,
     genericError,
     incentives,
-    program
+    program*/
   }
 
   wireAgreements;
@@ -62,9 +62,8 @@ export default class CcMemberAgreement extends LightningElement {
     this.loaded = false;
     let button = event.currentTarget;
     button.disabled = true;
-    
+
     acceptAgreement({
-      agreementId: button.dataset.agreement,
       memberId: button.dataset.member,
       recordId: button.dataset.record
     })

@@ -2,7 +2,7 @@ public with sharing class CcIncentivesController {
 
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> getIncentives(Map<string, Object> params){
-        List<IncentivesAPI.IncentiveWrapper> results = new List<IncentivesAPI.IncentiveWrapper>();
+        List<FieloPLT.IncentivesAPI.IncentiveWrapper> results = new List<FieloPLT.IncentivesAPI.IncentiveWrapper>();
         List<Map<String,Object>> listResult = new List<Map<String,Object>>();
         if( !params.isEmpty() || params != null) {
             // Set default params
@@ -47,7 +47,7 @@ public with sharing class CcIncentivesController {
                         false,
                         false);
                     if(!results.isEmpty()){
-                        for(IncentivesAPI.IncentiveWrapper itemChallenge: results){
+                        for(FieloPLT.IncentivesAPI.IncentiveWrapper itemChallenge: results){
                             Map<String, Object> itemMap = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(itemChallenge));
                             // gets all properties of challenge into the upper level
                             itemMap.putAll((Map<String, Object>) itemMap.get('incentive'));
@@ -75,7 +75,7 @@ public with sharing class CcIncentivesController {
                         false,
                         false);
                     if(!results.isEmpty()){
-                        for(IncentivesAPI.IncentiveWrapper itemPromotion: results){
+                        for(FieloPLT.IncentivesAPI.IncentiveWrapper itemPromotion: results){
                             Map<String, Object> itemMap = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(itemPromotion));
                             itemMap.putAll((Map<String, Object>) itemMap.get('incentive'));
                             itemMap.put('type', 'promotion');
@@ -92,7 +92,7 @@ public with sharing class CcIncentivesController {
 
     @AuraEnabled(cacheable=true)
     public static Map<String, Object> getIncentiveDetail(Map<string, Object> params){
-        List<IncentivesAPI.IncentiveWrapper> incentives = new List<IncentivesAPI.IncentiveWrapper>();
+        List<FieloPLT.IncentivesAPI.IncentiveWrapper> incentives = new List<FieloPLT.IncentivesAPI.IncentiveWrapper>();
         Map<String, Object> incentive = new Map<String, Object>();
         if( !params.isEmpty() || params != null){
             String type = params.containsKey('type') ? string.valueOf(params.get('type')).toLowerCase() : '';
@@ -166,7 +166,7 @@ public with sharing class CcIncentivesController {
                 'FieloPLT__ChallengeMember__r.FieloPLT__Member__r.FieloPLT__CurrentLevelMember__r.FieloPLT__Level__r.Name'
             };
 
-        	List<FieloPLT__MissionMember__c> missionLeaderboard = ChallengeService.getMissionLeaderboard(
+        	List<FieloPLT__MissionMember__c> missionLeaderboard = FieloPLT.ChallengeService.getMissionLeaderboard(
                 fieldsMissionMember,
                 (Id) params.get('missionId'),
                 (Id) params.get('memberId'),

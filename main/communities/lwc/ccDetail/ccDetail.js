@@ -1,6 +1,6 @@
 import { LightningElement, api, wire, track } from 'lwc';
-import getWiredFieldSet from '@salesforce/apex/AuraService.getWiredFieldSet';
-import getRecords from '@salesforce/apex/AuraService.getWiredRecords';
+import getWiredFieldSet from '@salesforce/apex/LWCService.getWiredFieldSet';
+import getRecords from '@salesforce/apex/LWCService.getWiredRecords';
 import { refreshApex } from '@salesforce/apex';
 
 export default class CcDetail extends LightningElement {
@@ -12,7 +12,7 @@ export default class CcDetail extends LightningElement {
     @track title = 'Payout Record';
     @track hasFields = false;
     @api columns = 2;
-    
+
     wiredFields;
     wiredRecords;
 

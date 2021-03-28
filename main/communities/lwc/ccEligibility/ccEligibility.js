@@ -1,10 +1,10 @@
 import { LightningElement, api, wire, track } from 'lwc';
 // labels
-import achieved from '@salesforce/label/c.cc_achieved';
+/*import achieved from '@salesforce/label/c.cc_achieved';
 import notAchieved from '@salesforce/label/c.cc_notachieved';
-import eligibilityDescriptionWarning from '@salesforce/label/c.CC_EligibilityDescriptionWarning';
+import eligibilityDescriptionWarning from '@salesforce/label/c.CC_EligibilityDescriptionWarning';*/
 // apex methods
-import getCriterias from '@salesforce/apex/AuraService.getEligibilitycriterion';
+import getCriterias from '@salesforce/apex/LWCService.getEligibilitycriterion';
 
 // labels success
 
@@ -23,9 +23,9 @@ export default class CcEligibility extends LightningElement {
 
   // Expose the labels to use in the template.
   label = {
-    achieved,
+    /*achieved,
     notAchieved,
-    eligibilityDescriptionWarning
+    eligibilityDescriptionWarning*/
   };
 
   // param to send to getCriterias

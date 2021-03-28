@@ -3,22 +3,22 @@ import getIncentives from '@salesforce/apex/CcIncentivesController.getIncentives
 import getIncentiveDetail from '@salesforce/apex/CcIncentivesController.getIncentiveDetail';
 import enroll from '@salesforce/apex/CcIncentivesController.enroll';
 import getMissionLeaderboard from '@salesforce/apex/CcIncentivesController.getMissionLeaderboard';
-import getFieldData from '@salesforce/apex/AuraService.getWiredFieldData';
-import getFieldSet from '@salesforce/apex/AuraService.getFieldSet';
+import getFieldData from '@salesforce/apex/LWCService.getWiredFieldData';
+import getFieldSet from '@salesforce/apex/LWCService.getFieldSet';
 import LANGUAGE from '@salesforce/i18n/lang';
-import getLabel from '@salesforce/apex/AuraService.getLabel';
-import getRecords from '@salesforce/apex/AuraService.getRecords';
+import getLabel from '@salesforce/apex/LWCService.getLabel';
+import getRecords from '@salesforce/apex/LWCService.getRecords';
 import { CurrentPageReference } from 'lightning/navigation';
-import { registerListener, unregisterAllListeners, fireEvent } from 'c/pubsub';
+//import { registerListener, unregisterAllListeners, fireEvent } from 'c/pubsub';
 import { refreshApex } from '@salesforce/apex';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent'
 
 
 // Static Resource
-import DEFAULT_INCENTIVE_IMAGE from '@salesforce/resourceUrl/FieloPlt_Salesforce';
+//import DEFAULT_INCENTIVE_IMAGE from '@salesforce/resourceUrl/FieloPlt_Salesforce';
 
 // Labels
-import noResultsFound from '@salesforce/label/c.Cc_NoResultsFound';
+/*import noResultsFound from '@salesforce/label/c.Cc_NoResultsFound';
 import description from '@salesforce/label/c.CC_Description';
 import missions from '@salesforce/label/c.CC_Missions';
 import rules from '@salesforce/label/c.CC_Rules';
@@ -40,7 +40,7 @@ import labelEnroll from '@salesforce/label/c.CC_Enroll';
 import enrollGlobalMessage from '@salesforce/label/c.CC_EnrollGlobalChallenge';
 import close from '@salesforce/label/c.Close';
 import agree from '@salesforce/label/c.Agree';
-import cancel from '@salesforce/label/c.Cancel';
+import cancel from '@salesforce/label/c.Cancel';*/
 
 
 // Constants
@@ -91,6 +91,63 @@ const INCENTIVES_GROUPS = {
   }
 };
 
+/**
+ * Registers a callback for an event
+ * @param {string} eventName - Name of the event to listen for.
+ * @param {function} callback - Function to invoke when said event is fired.
+ * @param {object} thisArg - The value to be passed as the this parameter to the callback function is bound.
+ */
+ const registerListener = (eventName, callback, thisArg) => {
+  // Checking that the listener has a pageRef property. We rely on that property for filtering purpose in fireEvent()
+  if (!thisArg.pageRef) {
+      throw new Error(
+          'pubsub listeners need a "@wire(CurrentPageReference) pageRef" property'
+      );
+  }
+
+  if (!events[eventName]) {
+      events[eventName] = [];
+  }
+  const duplicate = events[eventName].find((listener) => {
+      return listener.callback === callback && listener.thisArg === thisArg;
+  });
+  if (!duplicate) {
+      events[eventName].push({ callback, thisArg });
+  }
+};
+
+/**
+ * Unregisters all event listeners bound to an object.
+ * @param {object} thisArg - All the callbacks bound to this object will be removed.
+ */
+ const unregisterAllListeners = (thisArg) => {
+  Object.keys(events).forEach((eventName) => {
+      events[eventName] = events[eventName].filter(
+          (listener) => listener.thisArg !== thisArg
+      );
+  });
+};
+
+/**
+ * Fires an event to listeners.
+ * @param {object} pageRef - Reference of the page that represents the event scope.
+ * @param {string} eventName - Name of the event to fire.
+ * @param {*} payload - Payload of the event to fire.
+ */
+ const fireEvent = (pageRef, eventName, payload) => {
+  if (events[eventName]) {
+      const listeners = events[eventName];
+      listeners.forEach((listener) => {
+          if (samePageRef(pageRef, listener.thisArg.pageRef)) {
+              try {
+                  listener.callback.call(listener.thisArg, payload);
+              } catch (error) {
+                  // fail silently
+              }
+          }
+      });
+  }
+};
 
 export default class CcIncentives extends LightningElement {
   // builder properties
@@ -160,7 +217,7 @@ export default class CcIncentives extends LightningElement {
 
   // Custom labels
   label = {
-    noResultsFound,
+    /*noResultsFound,
     description,
     missions,
     rules,
@@ -176,7 +233,7 @@ export default class CcIncentives extends LightningElement {
     subscription,
     close,
     agree,
-    cancel
+    cancel*/
   }
 
   // disabled conditions for markup
@@ -1040,9 +1097,11 @@ export default class CcIncentives extends LightningElement {
     let setName = null;
     setName = this.listedIncentive = INCENTIVES_GROUPS.myIncentives.value;
     if (this.listType === CHALLENGE) {
-      this.defaultImage = DEFAULT_INCENTIVE_IMAGE + '/images/challenge.png';
+      //this.defaultImage = DEFAULT_INCENTIVE_IMAGE + '/images/challenge.png';
+      this.defaultImage = '../plt/main/default/staticresources/FieloPlt_Salesforce/images/challenge.png';
     } else {
-      this.defaultImage = DEFAULT_INCENTIVE_IMAGE + '/images/promotion.png';
+      //this.defaultImage = DEFAULT_INCENTIVE_IMAGE + '/images/promotion.png';
+      this.defaultImage = '../plt/main/default/staticresources/FieloPlt_Salesforce/images/promotion.png';
     }
 
     // set init params
@@ -1143,6 +1202,11 @@ export default class CcIncentives extends LightningElement {
         fieldSetName: this.recordMoreFields
       })
         .then(result => {
+          // Avoid render Name and CreatedDate inside the See More Fields option
+          // The Name and CreatedDate is the default return from getFieldSet when fail
+          if (result[0] === 'Name' && result[1] === 'CreatedDate') {
+            return;
+          }
           this.recordMoreFields = result.join();
 
           if (this.objectFields !== '') {
