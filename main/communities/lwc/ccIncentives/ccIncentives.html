@@ -101,8 +101,8 @@
               class="fielo-incentives__list-item slds-p-around_small">
               <!-- header -->
               <div class="fielo-incentives__list-item-header">
-                <img slot="title" class="fielo-incentives__list-item-image" src={item.image} onclick={handleClickListImage}
-                  data-index={index} />
+                <img slot="title" class="fielo-incentives__list-item-image" alt={item.title} src={item.image} onclick={handleClickListImage}
+                  data-index={index} aria-hidden="true" />
               </div>
               <!-- body -->
               <div class="fielo-incentives__list-item-body">

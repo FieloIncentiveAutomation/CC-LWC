@@ -1,6 +1,6 @@
 import { LightningElement, api, wire, track } from 'lwc';
-import getWiredFieldSet from '@salesforce/apex/AuraService.getWiredFieldSet';
-import getRecords from '@salesforce/apex/AuraService.getWiredRecords';
+import getWiredFieldSet from '@salesforce/apex/LWCService.getWiredFieldSet';
+import getRecords from '@salesforce/apex/LWCService.getWiredRecords';
 import { refreshApex } from '@salesforce/apex';
 
 export default class CcRelatedList extends LightningElement {
@@ -9,7 +9,7 @@ export default class CcRelatedList extends LightningElement {
     @api recordsPerPage = 5;
     @api showCheckbox = false;
     @api filter = '{}';
-    
+
     @track fields = '';
     @track fieldMap = {};
     @track title = 'Payout Items';
@@ -31,10 +31,10 @@ export default class CcRelatedList extends LightningElement {
         edit: false
     }];
 
-    @track offset = 0; // Offset of the resulted records 
+    @track offset = 0; // Offset of the resulted records
     @track disablePrevious = true; // Check if there's a Next page of records
     @track disableNext = true; // Check if there's a Next page of records
-    
+
 
     @wire(getWiredFieldSet, {
         objectApiName: '$objectName',

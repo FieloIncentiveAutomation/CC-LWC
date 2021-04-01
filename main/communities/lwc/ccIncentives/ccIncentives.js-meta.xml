@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>48.0</apiVersion>
+    <apiVersion>50.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>Fielo - Incentives</masterLabel>
     <targets>
@@ -16,7 +16,7 @@
                 label="Select Incentive to list"
                 description="Whether to show Challenges or Promotions"
                 datasource="Challenge,Promotion"
-                default="Challenge" 
+                default="Challenge"
             />
             <property
                 name="eligibilityMode"
@@ -24,14 +24,14 @@
                 label="Eligibility mode"
                 description="Select which Incentives are going to be listed "
                 datasource="Apply, Not Apply, All"
-                default="Apply" 
+                default="Apply"
             />
             <property
                 name="componentTitle"
                 type="String"
                 label="Title of the component"
                 description="You can use a text or a Custom Label by the use of Label.CustomLabel"
-                default="" 
+                default=""
             />
             <!-- LIST -->
             <property
@@ -39,28 +39,28 @@
                 type="String"
                 label="More Filters"
                 description="Write the API name of the fieldset to add more filters (Status, Start date and End date already included)"
-                default="" 
+                default=""
             />
             <property
                 name="listImageField"
                 type="String"
                 label="List - Choose the image field"
                 description="Choose the field that contains the url to the image"
-                default="FieloPLT__ExternalURL__c" 
+                default="FieloPLT__ExternalURL__c"
             />
             <property
                 name="listTitleField"
                 type="String"
                 label="List - Choose the title field"
                 description="Choose the field that contains the title"
-                default="Name" 
+                default="Name"
             />
             <property
                 name="listDescriptionField"
                 type="String"
                 label="List - Choose the description field"
                 description="Choose the field that contains the description"
-                default="FieloPLT__ShortDescription__c" 
+                default="FieloPLT__ShortDescription__c"
             />
             <!-- RECORD -->
             <property
@@ -68,28 +68,28 @@
                 type="String"
                 label="Record - Choose the image field"
                 description="Choose the field that contains the url to the image"
-                default="FieloPLT__ExternalURL__c" 
+                default="FieloPLT__ExternalURL__c"
             />
             <property
                 name="recordTitleField"
                 type="String"
                 label="Record - Choose the title field"
                 description="Choose the field that contains the title"
-                default="Name" 
+                default="Name"
             />
             <property
                 name="recordDescriptionField"
                 type="String"
                 label="Record - Choose the description field"
                 description="Choose the field that contains the description"
-                default="FieloPLT__Description__c" 
+                default="FieloPLT__Description__c"
             />
             <property
                 name="recordMoreFields"
                 type="String"
                 label="Record - Show More Fields"
                 description="Write the API name of the fieldset to add more fields to show"
-                default="" 
+                default=""
             />
         </targetConfig>
     </targetConfigs>

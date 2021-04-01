@@ -3,11 +3,11 @@ import getIncentives from '@salesforce/apex/CcIncentivesController.getIncentives
 import getIncentiveDetail from '@salesforce/apex/CcIncentivesController.getIncentiveDetail';
 import enroll from '@salesforce/apex/CcIncentivesController.enroll';
 import getMissionLeaderboard from '@salesforce/apex/CcIncentivesController.getMissionLeaderboard';
-import getFieldData from '@salesforce/apex/AuraService.getWiredFieldData';
-import getFieldSet from '@salesforce/apex/AuraService.getFieldSet';
+import getFieldData from '@salesforce/apex/LWCService.getWiredFieldData';
+import getFieldSet from '@salesforce/apex/LWCService.getFieldSet';
 import LANGUAGE from '@salesforce/i18n/lang';
-import getLabel from '@salesforce/apex/AuraService.getLabel';
-import getRecords from '@salesforce/apex/AuraService.getRecords';
+import getLabel from '@salesforce/apex/LWCService.getLabel';
+import getRecords from '@salesforce/apex/LWCService.getRecords';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners, fireEvent } from 'c/pubsub';
 import { refreshApex } from '@salesforce/apex';
@@ -18,29 +18,29 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent'
 import DEFAULT_INCENTIVE_IMAGE from '@salesforce/resourceUrl/FieloPlt_Salesforce';
 
 // Labels
-import noResultsFound from '@salesforce/label/c.Cc_NoResultsFound';
-import description from '@salesforce/label/c.CC_Description';
-import missions from '@salesforce/label/c.CC_Missions';
-import rules from '@salesforce/label/c.CC_Rules';
-import seeMore from '@salesforce/label/c.CC_SeeMore';
-import seeLess from '@salesforce/label/c.CC_SeeLess';
-import sortByDisabled from '@salesforce/label/c.CC_SortByDisabled';
-import sortByNewestFirst from '@salesforce/label/c.CC_SortByNewestFirst';
-import sortByOldestFirst from '@salesforce/label/c.CC_SortByOldestFirst';
-import myRecentActivity from '@salesforce/label/c.CC_MyRecentActivity';
-import myPastActivity from '@salesforce/label/c.CC_MyPastActivity';
-import sortBy from '@salesforce/label/c.CC_SortBy';
-import eligibilityRequirements from '@salesforce/label/c.CC_EligibilityRequirements';
-import eligibilityDescriptionWarning from '@salesforce/label/c.CC_EligibilityDescriptionWarning';
-import qualified from '@salesforce/label/c.CC_Qualified';
-import potential from '@salesforce/label/c.CC_Potential';
-import listedIncentives from '@salesforce/label/c.CC_ListedIncentives';
-import subscription from '@salesforce/label/c.Subscription';
-import labelEnroll from '@salesforce/label/c.CC_Enroll';
-import enrollGlobalMessage from '@salesforce/label/c.CC_EnrollGlobalChallenge';
-import close from '@salesforce/label/c.Close';
-import agree from '@salesforce/label/c.Agree';
-import cancel from '@salesforce/label/c.Cancel';
+import noResultsFound from '@salesforce/label/FieloPLT.Cc_NoResultsFound';
+import description from '@salesforce/label/FieloPLT.CC_Description';
+import missions from '@salesforce/label/FieloPLT.CC_Missions';
+import rules from '@salesforce/label/FieloPLT.CC_Rules';
+import seeMore from '@salesforce/label/FieloPLT.CC_SeeMore';
+import seeLess from '@salesforce/label/FieloPLT.CC_SeeLess';
+import sortByDisabled from '@salesforce/label/FieloPLT.CC_SortByDisabled';
+import sortByNewestFirst from '@salesforce/label/FieloPLT.CC_SortByNewestFirst';
+import sortByOldestFirst from '@salesforce/label/FieloPLT.CC_SortByOldestFirst';
+import myRecentActivity from '@salesforce/label/FieloPLT.CC_MyRecentActivity';
+import myPastActivity from '@salesforce/label/FieloPLT.CC_MyPastActivity';
+import sortBy from '@salesforce/label/FieloPLT.CC_SortBy';
+import eligibilityRequirements from '@salesforce/label/FieloPLT.CC_EligibilityRequirements';
+import eligibilityDescriptionWarning from '@salesforce/label/FieloPLT.CC_EligibilityDescriptionWarning';
+import qualified from '@salesforce/label/FieloPLT.CC_Qualified';
+import potential from '@salesforce/label/FieloPLT.CC_Potential';
+import listedIncentives from '@salesforce/label/FieloPLT.CC_ListedIncentives';
+import subscription from '@salesforce/label/FieloPLT.Subscription';
+import labelEnroll from '@salesforce/label/FieloPLT.CC_Enroll';
+import enrollGlobalMessage from '@salesforce/label/FieloPLT.CC_EnrollGlobalChallenge';
+import close from '@salesforce/label/FieloPLT.Close';
+import agree from '@salesforce/label/FieloPLT.Agree';
+import cancel from '@salesforce/label/FieloPLT.Cancel';
 
 
 // Constants
@@ -90,7 +90,6 @@ const INCENTIVES_GROUPS = {
     value: 'All Available'
   }
 };
-
 
 export default class CcIncentives extends LightningElement {
   // builder properties
@@ -941,7 +940,6 @@ export default class CcIncentives extends LightningElement {
   setFilter() {
     let offset = 0;
     let filters = Object.values(this.filters);
-    console.log(filters);
     this.updateIncentivesParams({ filters, offset });
   }
 
@@ -1078,10 +1076,6 @@ export default class CcIncentives extends LightningElement {
    */
   setFieldsToQuery() {
     // set fields
-    var tempMF = [];
-    if (this.recordMoreFields) {
-      tempMF = this.recordMoreFields.split(',');
-    }
     let challengeFields = [];
     if (this.listType === CHALLENGE) {
       challengeFields.push('FieloPLT__TargetAudience__c');
@@ -1089,7 +1083,6 @@ export default class CcIncentives extends LightningElement {
     this.fields = [
       ...new Set([
         ...MANDATORY_FIELDS,
-        ...tempMF,
         ...challengeFields,
         this.listImageField,
         this.listTitleField,
@@ -1142,21 +1135,26 @@ export default class CcIncentives extends LightningElement {
         objectApiName: objectName,
         fieldSetName: this.recordMoreFields
       })
-        .then(result => {
+      .then(result => {
+        // Avoid render Name and CreatedDate inside the See More Fields option
+        // The Name and CreatedDate is the default return from getFieldSet when fail
+        if (result.length === 2 && result[0] === 'Name' && result[1] === 'CreatedDate') {
+          this.recordMoreFields = '';
+        } else {
           this.recordMoreFields = result.join();
-
           if (this.objectFields !== '') {
             this.objectFields += ',';
           }
           this.objectFields += this.recordMoreFields;
-          this.fieldsetCalls++;
-          if (this.fieldsetCalls === this.fieldsetToBeCall) {
-            this.objectName = objectName;
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
+        }
+        this.fieldsetCalls++;
+        if (this.fieldsetCalls === this.fieldsetToBeCall) {
+          this.objectName = objectName;
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
     }
     this.objectName = objectName;
   }
