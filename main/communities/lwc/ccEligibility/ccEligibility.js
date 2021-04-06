@@ -1,8 +1,8 @@
 import { LightningElement, api, wire, track } from 'lwc';
 // labels
-import achieved from '@salesforce/label/FieloPLT.cc_achieved';
-import notAchieved from '@salesforce/label/FieloPLT.cc_notachieved';
-import eligibilityDescriptionWarning from '@salesforce/label/FieloPLT.CC_EligibilityDescriptionWarning';
+import achieved from '@salesforce/label/c.cc_achieved';
+import notAchieved from '@salesforce/label/c.cc_notachieved';
+import eligibilityDescriptionWarning from '@salesforce/label/c.CC_EligibilityDescriptionWarning';
 // apex methods
 import getCriterias from '@salesforce/apex/LWCService.getEligibilitycriterion';
 

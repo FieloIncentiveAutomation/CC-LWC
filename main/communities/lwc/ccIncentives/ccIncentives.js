@@ -18,29 +18,29 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent'
 import DEFAULT_INCENTIVE_IMAGE from '@salesforce/resourceUrl/FieloPlt_Salesforce';
 
 // Labels
-import noResultsFound from '@salesforce/label/FieloPLT.Cc_NoResultsFound';
-import description from '@salesforce/label/FieloPLT.CC_Description';
-import missions from '@salesforce/label/FieloPLT.CC_Missions';
-import rules from '@salesforce/label/FieloPLT.CC_Rules';
-import seeMore from '@salesforce/label/FieloPLT.CC_SeeMore';
-import seeLess from '@salesforce/label/FieloPLT.CC_SeeLess';
-import sortByDisabled from '@salesforce/label/FieloPLT.CC_SortByDisabled';
-import sortByNewestFirst from '@salesforce/label/FieloPLT.CC_SortByNewestFirst';
-import sortByOldestFirst from '@salesforce/label/FieloPLT.CC_SortByOldestFirst';
-import myRecentActivity from '@salesforce/label/FieloPLT.CC_MyRecentActivity';
-import myPastActivity from '@salesforce/label/FieloPLT.CC_MyPastActivity';
-import sortBy from '@salesforce/label/FieloPLT.CC_SortBy';
-import eligibilityRequirements from '@salesforce/label/FieloPLT.CC_EligibilityRequirements';
-import eligibilityDescriptionWarning from '@salesforce/label/FieloPLT.CC_EligibilityDescriptionWarning';
-import qualified from '@salesforce/label/FieloPLT.CC_Qualified';
-import potential from '@salesforce/label/FieloPLT.CC_Potential';
-import listedIncentives from '@salesforce/label/FieloPLT.CC_ListedIncentives';
-import subscription from '@salesforce/label/FieloPLT.Subscription';
-import labelEnroll from '@salesforce/label/FieloPLT.CC_Enroll';
-import enrollGlobalMessage from '@salesforce/label/FieloPLT.CC_EnrollGlobalChallenge';
-import close from '@salesforce/label/FieloPLT.Close';
-import agree from '@salesforce/label/FieloPLT.Agree';
-import cancel from '@salesforce/label/FieloPLT.Cancel';
+import noResultsFound from '@salesforce/label/c.Cc_NoResultsFound';
+import description from '@salesforce/label/c.CC_Description';
+import missions from '@salesforce/label/c.CC_Missions';
+import rules from '@salesforce/label/c.CC_Rules';
+import seeMore from '@salesforce/label/c.CC_SeeMore';
+import seeLess from '@salesforce/label/c.CC_SeeLess';
+import sortByDisabled from '@salesforce/label/c.CC_SortByDisabled';
+import sortByNewestFirst from '@salesforce/label/c.CC_SortByNewestFirst';
+import sortByOldestFirst from '@salesforce/label/c.CC_SortByOldestFirst';
+import myRecentActivity from '@salesforce/label/c.CC_MyRecentActivity';
+import myPastActivity from '@salesforce/label/c.CC_MyPastActivity';
+import sortBy from '@salesforce/label/c.CC_SortBy';
+import eligibilityRequirements from '@salesforce/label/c.CC_EligibilityRequirements';
+import eligibilityDescriptionWarning from '@salesforce/label/c.CC_EligibilityDescriptionWarning';
+import qualified from '@salesforce/label/c.CC_Qualified';
+import potential from '@salesforce/label/c.CC_Potential';
+import listedIncentives from '@salesforce/label/c.CC_ListedIncentives';
+import subscription from '@salesforce/label/c.Subscription';
+import labelEnroll from '@salesforce/label/c.CC_Enroll';
+import enrollGlobalMessage from '@salesforce/label/c.CC_EnrollGlobalChallenge';
+import close from '@salesforce/label/c.Close';
+import agree from '@salesforce/label/c.Agree';
+import cancel from '@salesforce/label/c.Cancel';
 
 
 // Constants

@@ -5,11 +5,11 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
 // Labels
-import agree from '@salesforce/label/FieloPLT.Agree';
-import agreement from '@salesforce/label/FieloPLT.Agreement';
-import genericError from '@salesforce/label/FieloPLT.GenericError';
-import incentives from '@salesforce/label/FieloPLT.Incentives';
-import program from '@salesforce/label/FieloPLT.Program';
+import agree from '@salesforce/label/c.Agree';
+import agreement from '@salesforce/label/c.Agreement';
+import genericError from '@salesforce/label/c.GenericError';
+import incentives from '@salesforce/label/c.Incentives';
+import program from '@salesforce/label/c.Program';
 
 export default class CcMemberAgreement extends LightningElement {
 
