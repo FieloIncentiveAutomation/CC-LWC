@@ -12,9 +12,9 @@
             large-device-size="2" class="slds-p-horizontal_large slds-p-left--none">
             <lightning-combobox
               name="filter-group"
-              label="label.listedIncentives"
+              label={label.listedIncentives}
               options={incentivesGroups}
-              onchange={handleChangeListedIncentives} 
+              onchange={handleChangeListedIncentives}
               value={listedIncentive}
               class="fielo-incentives__filter-item"></lightning-combobox>
           </lightning-layout-item>
@@ -22,7 +22,7 @@
           <template for:each={filterDataList} for:item="item" for:index="index">
             <lightning-layout-item size="6" small-device-size="6" medium-device-size="4" large-device-size="2"
               key={item.name} class="slds-p-horizontal_large slds-p-left--none">
-            
+
               <!-- Picklist -->
               <lightning-combobox if:true={item.type.picklist} name={item.name} label={item.label}
                 options={item.picklistentries} onchange={handleFilterChange}
@@ -40,7 +40,7 @@
               <div if:true={item.type.date}>
                 <label class="slds-form-element__label">{item.label}</label>
                 <lightning-layout>
-                  <lightning-layout-item key={item.index} size="6"> 
+                  <lightning-layout-item key={item.index} size="6">
                     <lightning-input type="date" name={item.rangeStart} data-range="start" variant="label-hidden" placeholder="From"
                       onchange={handleFilterChange} class="fielo-incentives__filter-item" data-field-name={item.name} value={item.value}></lightning-input>
                   </lightning-layout-item>
@@ -84,7 +84,7 @@
             class="slds-p-horizontal_large slds-p-left--none">
             <lightning-combobox label={label.sortBy} options={sortByOptions} onchange={handleChangeSortBy} placeholder={label.sortByNewestFirst} value="Newest First"></lightning-combobox>
           </lightning-layout-item>
-          
+
         </lightning-layout>
       </lightning-layout-item>
       <template if:true={loaded}>
@@ -94,7 +94,7 @@
           <!-- list -->
           <template if:true={recordsForList.length} for:each={recordsForList} for:item="item"
             for:index="index">
-             
+
             <!-- <lightning-layout-item flexibility="auto" key={item.id}  class="fielo-incentives__list-item slds-p-around_small"> -->
             <lightning-layout-item size="12" small-device-size="6" medium-device-size="4"
                large-device-size="3"  key={item.id}
@@ -116,10 +116,10 @@
                 <template if:true={showEligibilityButton}>
                   <!-- Eligibility -->
                   <lightning-button
-                    if:false={item.eligibility.eligible} 
+                    if:false={item.eligibility.eligible}
                     variant="base"
-                    label={label.eligibilityRequirements} 
-                    title={label.eligibilityRequirements} 
+                    label={label.eligibilityRequirements}
+                    title={label.eligibilityRequirements}
                     data-index={index}
                     onclick={handleClickEligibilityButton}
                     class="fielo-incentives__list-item-button slds-m-right_small"
@@ -130,7 +130,7 @@
                 </template>
                 <template if:true={showEnrollButton}>
                   <!-- Enroll -->
-                  <lightning-button 
+                  <lightning-button
                     if:true={item.eligibility.eligible}
                     variant="base"
                     label={label.enroll}
@@ -266,11 +266,11 @@
                           <div if:false={mission.isTypeWithObjective} class="slds-text-align_right">{mission.progress.value}</div>
                         </lightning-layout-item>
                       </lightning-layout>
-                      
+
                       <lightning-layout multiple-rows>
                         <lightning-layout-item size="12" small-device-size={mission.descriptionSize} class="slds-p-bottom_small slds-p-horizontal_x-small">
                           <lightning-formatted-rich-text class="fielo-incentives__record-mission-description"
-                            value={mission.description}> 
+                            value={mission.description}>
                           </lightning-formatted-rich-text>
                         </lightning-layout-item>
                         <lightning-layout-item if:true={mission.hasLeaderboard} size="12" small-device-size="6" class="slds-p-horizontal_x-small fielo-incentives__mission-leaderboard">
@@ -297,7 +297,7 @@
                           </ul>
                         </lightning-layout-item>
                       </lightning-layout>
-                      
+
                     </lightning-accordion-section>
                   </template>
                 </lightning-accordion>
