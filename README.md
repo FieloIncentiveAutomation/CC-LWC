@@ -1,7 +1,9 @@
 # CC-LWC
 Fielo Community LWC
 
-# Deploy
+# Deploy instructions
+
+If you already have an environment with Salesforce CLI and Visual Studio Code set up, jump to **Connecting to the target sandboxes / orgs**
 
 ### Working with a Salesforce DX project
 
@@ -25,7 +27,7 @@ You will also have to clone the Github repository locally. To do that, navigate 
 
 ### Connecting to the target sandboxes / orgs
 
-You will need to authenticate your Salesforce CLI client against your development / testing / UAT / production sandboxes / orgs. To do that, in your Salesforce DX project folder execute the following command:
+You will need to authenticate your Salesforce CLI client against your development / testing / production sandboxes / orgs that have the latest FieloPLT package installed in order to be able to deploy and use the components. To do that, in your Salesforce DX project folder execute the following command:
 
 `sfdx force:auth:web:login -r https://test.salesforce.com -a <SANDBOX_ALIAS>`
 
@@ -35,14 +37,15 @@ Or
 
 ### Metadata deployment
 
+If you didn't convert the source into metadata, execute the following command:
+
+`sfdx force:source:deploy -u <SANDBOX/ORG_ALIAS> -p force-app`
+
 (Optional) convert the source into metadata with the following command:
 
-`sfdx force:source:convert -r force-app/ -d <CONVERTED_METADATA_FOLDER>`
+`sfdx force:source:convert -r force-app -d <CONVERTED_METADATA_FOLDER>`
 
-To test the deployment against another sandbox, executing the following command:
+(Optional) deploy the converted metadata with the following command:
 
 `sfdx force:mdapi:deploy -u <SANDBOX/ORG_ALIAS> -d <CONVERTED_METADATA_FOLDER>`
 
-Or, if you didn't convert the source into metadata:
-
-`sfdx force:source:deploy -u <SANDBOX/ORG_ALIAS> -p force-app`
