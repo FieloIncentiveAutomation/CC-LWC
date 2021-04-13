@@ -1,0 +1,95 @@
+<template>
+  <div if:true={showMemberAgreements}>
+
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+      aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container fielo-member-agreement-modal">
+        <header class="slds-modal__header">
+          <lightning-button-icon class="slds-modal__close" icon-name="utility:close" variant="bare-inverse"
+            alternative-text={label.close} title={label.close} onclick={handleClickCloseModal}></lightning-button-icon>
+          <div class="slds-modal__title slds-text-heading_medium">{label.agreement}</div>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+
+          <lightning-tabset>
+            <lightning-tab if:true={showProgramAgreement} label={label.program}>
+
+              <div>
+                <div>
+                  <lightning-formatted-rich-text value={memberAgreements.program.agreementText}></lightning-formatted-rich-text>
+                </div>
+                <div if:false={memberAgreements.program.memberAgreed} style="text-align: right">
+                  <lightning-button
+                      variant="brand"
+                      name={memberAgreements.program.agreementId}
+                      label={label.agree} 
+                      title={label.agree} 
+                      data-type="program"
+                      data-member={member}
+                      data-agreement={memberAgreements.program.agreementId}
+                      data-record={memberAgreements.program.recordId}
+                      onclick={handleClickAgree}
+                    ></lightning-button>
+                </div>
+                <div if:true={memberAgreements.program.memberAgreed} style="text-align: right">
+                  <lightning-icon icon-name="utility:check" alternative-text="Connected" title="Connected" variant="success"></lightning-icon>
+                </div>
+              </div>
+
+            </lightning-tab>
+            <lightning-tab if:true={showIncentivesAgreements} label={label.incentives}>
+
+              <lightning-accordion active-section-name={activeSections}>
+                <template for:each={memberAgreements.incentives} for:item="item" for:index="index">
+                  <lightning-accordion-section class="fielo-member-agreement__accordion-section" key={item.agreementId} name={item.title} label={item.title}>
+                    
+                    <lightning-layout if:true={item.memberAgreed} slot="actions" style="width:50%">
+                      <lightning-layout-item flexibility="auto"></lightning-layout-item>
+                      <lightning-layout-item size="1">
+                        <lightning-icon icon-name="utility:check" alternative-text="Connected" title="Connected" variant="success"></lightning-icon>
+                      </lightning-layout-item>
+                    </lightning-layout>
+
+                    <div>
+                      <div>
+                        <lightning-formatted-rich-text value={item.agreementText}></lightning-formatted-rich-text>
+                      </div>
+                      <div if:false={item.memberAgreed} style="text-align: right">
+                        <lightning-button
+                            variant="brand"
+                            name={item.agreementId}
+                            label={label.agree} 
+                            title={label.agree} 
+                            data-type="incentives"
+                            data-index={index}
+                            data-member={member}
+                            data-agreement={item.agreementId}
+                            data-record={item.recordId}
+                            onclick={handleClickAgree}
+                          ></lightning-button>
+                      </div>
+                    </div>
+                  </lightning-accordion-section>
+                </template>
+              </lightning-accordion>
+
+            </lightning-tab>
+          </lightning-tabset> 
+        </div>
+        <!-- <footer class="slds-modal__footer">
+          
+        </footer> -->
+      </div>
+
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" onclick={handleClickCloseModal}></div>
+
+  </div>
+
+  <!-- spinner -->
+  <div if:false={loaded} style="position:relative; z-index: 9999;">
+    <div if:false={loaded} class="slds-backdrop slds-backdrop_open">
+      <lightning-spinner alternative-text="Loading" size="medium" variant="brand" class="slds-is-static"></lightning-spinner>
+    </div>
+  </div>
+</template>
